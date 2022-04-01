@@ -1,0 +1,15 @@
+server:
+    port: 8088
+    
+logging:
+    level:
+        uk.gov.hmrc: DEBUG
+
+tax:
+    authUrl: https://test-api.service.hmrc.gov.uk/
+    redirectUrl: https://localhost
+    scope: common-transit-convention-traders
+    submitIE015Url: ${tax.authUrl}customs/transits/movements/departures
+    secret: change-me
+    clientId: change-me
+
