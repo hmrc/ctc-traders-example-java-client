@@ -8,7 +8,7 @@ We are working on an example page to submit a new departure declaration message.
 
 ## The Example Application
 
-This code runs Srping Boot with an Apache Wicket UI framework.  It is configured to run using the HMRC Sandbox environment.
+This code runs Spring Boot with an Apache Wicket UI framework.  It is configured to run using the HMRC Sandbox environment.
 
 ### HTTPS setup
 The sign-in flow requires a secure https URL to redirect to after a successful (or failed) login attempt.  The Java application listens on http port 8080 by default so the easiest way to provide https is to add a reverse proxy.  It's beyond this readme to go through all the steps to configure a reverse proxy but basically you'll need to create an SSL certificate and configure routing on your chosen proxy.  
