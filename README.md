@@ -2,9 +2,13 @@
 
 The Common Transit Convention Traders API uses the OAuth2 protocol via the Government Gateway to authenticate users.  User must also be enrolled to NCTS.
 
-This version of the code only demonstrates how to redirect to the Government Gateway sign-in pages.  
+This version of the code so far only demonstrates how to 
+- redirect to the Government Gateway sign-in pages
+- submit a sample IE015 XML 
 
-We are working on an example page to submit a new departure declaration message.
+We are working on other pages to retrieve and updated departure movements.
+
+There's no plans to create example pages for arrival movements because the principle is the same as departures.
 
 ## The Example Application
 

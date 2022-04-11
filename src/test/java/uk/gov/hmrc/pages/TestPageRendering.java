@@ -13,8 +13,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.hmrc.WicketWebApplication;
 import uk.gov.hmrc.entities.OauthPair;
-import uk.gov.hmrc.pages.HomePage;
-import uk.gov.hmrc.pages.SubmitDepartureDeclarationPage;
 import uk.gov.hmrc.services.AuthService;
 
 import java.time.LocalDateTime;
@@ -22,7 +20,7 @@ import java.time.LocalDateTime;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class TestHomePage {
+public class TestPageRendering {
     private WicketTester tester;
 
     @Autowired
