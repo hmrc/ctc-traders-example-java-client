@@ -2,9 +2,9 @@
 
 The Common Transit Convention Traders API uses the OAuth2 protocol via the Government Gateway to authenticate users.  User must also be enrolled to NCTS.
 
-This version of the code so far only demonstrates how to 
+This version of the code so far only demonstrates how to
 - redirect to the Government Gateway sign-in pages
-- submit a sample IE015 XML 
+- submit a sample IE015 XML
 
 We are working on other pages to retrieve and updated departure movements.
 
@@ -12,12 +12,14 @@ There's no plans to create example pages for arrival movements because the princ
 
 ## The Example Application
 
-This code runs Spring Boot with an Apache Wicket UI framework.  It is configured to run using the HMRC Sandbox environment.
+This example code runs Spring Boot with an Apache Wicket UI framework and requires Java 11 to run.  
+
+It is configured to run using the [HMRC Sandbox environment](https://developer.service.hmrc.gov.uk/api-documentation/docs/testing).
 
 ### HTTPS setup
-The sign-in flow requires a secure https URL to redirect to after a successful (or failed) login attempt.  The Java application listens on http port 8080 by default so the easiest way to provide https is to add a reverse proxy.  It's beyond this readme to go through all the steps to configure a reverse proxy but basically you'll need to create an SSL certificate and configure routing on your chosen proxy.  
+The sign-in flow requires a secure https URL to redirect to after a successful (or failed) login attempt.  The Java application listens on http port 8088 by default so the easiest way to provide https is to add a reverse proxy.  It's beyond this readme to go through all the steps to configure a reverse proxy but basically you'll need to create an SSL certificate and configure routing on your chosen proxy.
 
-It is beyond the scope of this readme to explain nginx installation but once install on a Mac, I would generate a local certificate:
+It is beyond the scope of this readme to explain nginx installation but once installed on a Mac, I would generate a local certificate:
 
 ```
 sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
@@ -25,7 +27,7 @@ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 ```
 
 and then edit the /usr/local/etc/nginx/nginx.conf file to add the reverse proxy:
-	
+
 	server {
 
 	    listen 443;
@@ -75,23 +77,16 @@ and then edit the /usr/local/etc/nginx/nginx.conf file to add the reverse proxy:
 	  }
 	    include servers/*;
 	}
-	
+
 nginx will then need restarting/reloading to pickup the new config.
 
 ### Dev Hub create application
 Before starting the Java example, you will need to sign-up for a HMRC application on the HMRC Sandbox environment.
 
-If you don't already have an account, go to 
+If you don't already have an account, go to [https://test-developer.service.hmrc.gov.uk/developer/registration]("https://test-developer.service.hmrc.gov.uk/developer/registration")
 
-```
-https://test-developer.service.hmrc.gov.uk/developer/registration
-```
+then add an application here [https://test-developer.service.hmrc.gov.uk/developer/applications]("https://test-developer.service.hmrc.gov.uk/developer/applications")
 
-then add an application here
-
-```
-https://test-developer.service.hmrc.gov.uk/developer/applications
-```
 
 Once you have an application, there will be a tabs which include Details and Testing Credentials.  Add `https://localhost` to the *Redirect URI* section of the Details tab.  Don't forget to click `Save Changes` at the bottom.
 
@@ -100,10 +95,10 @@ In the *Subscriptions* tab, subscribe to Common Transit Convention Traders.
 You will need the Client ID and Secret from the *Testing Credentials* tab for the configuration below.
 
 ### Application configuration
-Clone the example code from github 
+Clone the example code from github
 
 ```
-https://github.com/hmrc/ctc-traders-example-java-client
+git clone https://github.com/hmrc/ctc-traders-example-java-client.git
 ```
 
 ### Start the application
@@ -151,17 +146,14 @@ $API_URL/create-test-user/organisations \
 -d '{"serviceNames": [ "common-transit-convention-traders" ] }'
 ```
 
-which will generate and return a new test user with a username and password.  Note/copy these for use later. 
+which will generate and return a new test user with a username and password.  Note/copy these for use later.
 
 ### Running the client
 
-Assuming that everything is running right, you should be able to open a web browser and go to 
+Assuming that everything is running right, you should be able to open a web browser and go to [https://localhost/]("https://localhost/")
 
-```
-https://localhost/
-```
-	
-You should be redirected to the Government Gateway login page.  Login as your test user and grant the scope then you will be redirected back to the example client home page. 
+
+You should be redirected to the Government Gateway login page.  Login as your test user and grant the scope then you will be redirected back to the example client home page.
 
 ![Kiku](./images/homepage.png)
 
@@ -169,8 +161,11 @@ You should be redirected to the Government Gateway login page.  Login as your te
 ## Sequence Diagrams
 
 ### Auth flow
-See [Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/docs/authorisation/user-restricted-endpoints)
+See the [Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/docs/authorisation/user-restricted-endpoints) for more information.
 ![Kiku](./images/auth-flow.png)
+
+### Submit Departure Declaration
+![Kiku](./images/submit-departure-declaration.png)
 
 ## License
 
@@ -180,6 +175,4 @@ This code is open source software licensed under the [Apache 2.0 License]("http:
 
 If you have any suggestions, requests or discover any bugs, please use the github issues page to communicate with us.
 
-```
-https://github.com/hmrc/ctc-traders-example-java-client/issues
-```
+[https://github.com/hmrc/ctc-traders-example-java-client/issues]("https://github.com/hmrc/ctc-traders-example-java-client/issues")
