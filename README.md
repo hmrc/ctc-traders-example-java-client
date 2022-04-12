@@ -1,6 +1,6 @@
 # Common Transit Convention Traders Example API Client
 
-The Common Transit Convention Traders API uses the OAuth2 protocol via the Government Gateway to authenticate users.  User must also be enrolled to NCTS.
+The Common Transit Convention Traders API uses the OAuth2 protocol via the Government Gateway to authenticate users.  Users must also be enrolled to NCTS.
 
 This version of the code so far only demonstrates how to
 - redirect to the Government Gateway sign-in pages
