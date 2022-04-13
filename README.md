@@ -90,7 +90,7 @@ then add an application here [https://test-developer.service.hmrc.gov.uk/develop
 
 Once you have an application, there will be a tabs which include Details and Testing Credentials.  Add `https://localhost` to the *Redirect URI* section of the Details tab.  Don't forget to click `Save Changes` at the bottom.
 
-In the *Subscriptions* tab, subscribe to Common Transit Convention Traders.
+In the *Subscriptions* tab, subscribe to `Common Transit Convention Traders` and to `Create Test User` in the 'APIs for testing your service' section.
 
 You will need the Client ID and Secret from the *Testing Credentials* tab for the configuration below.
 
