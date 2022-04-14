@@ -80,17 +80,32 @@ and then edit the /usr/local/etc/nginx/nginx.conf file to add the reverse proxy:
 
 nginx will then need restarting/reloading to pickup the new config.
 
+### Sign Up for an Account
+If you don't already have a Developer Hub account, go to [https://test-developer.service.hmrc.gov.uk/developer/registration]("https://test-developer.service.hmrc.gov.uk/developer/registration")
+
 ### Dev Hub create application
 Before starting the Java example, you will need to sign-up for a HMRC application on the HMRC Sandbox environment.
 
-If you don't already have an account, go to [https://test-developer.service.hmrc.gov.uk/developer/registration]("https://test-developer.service.hmrc.gov.uk/developer/registration")
+Sign in to your Developer Hub account and add an application here [https://test-developer.service.hmrc.gov.uk/developer/applications]("https://test-developer.service.hmrc.gov.uk/developer/applications")
 
-then add an application here [https://test-developer.service.hmrc.gov.uk/developer/applications]("https://test-developer.service.hmrc.gov.uk/developer/applications")
+Steps to create an application:
+- Select *Add an application to the sandbox* and follow the instructions
+- *What's the name of your application*' give the application a name
+- *Which APIs do you want to use?* subscribe to `Common Transit Convention Traders` and `Create Test User`, then click *Add your application*
+- *Configure your API subscriptions* click *Continue*
+- Enter information specific to your API
+- You will be asked if you want to receive emails about your selected APIs
+- *Which topics do you want to receive information about?* you must select at least one, then click *Continue*
+- *Application added to the sandbox*
 
+You can now view your application credentials. 
+Make a note of your *Client ID*.
+You will be prompted to generate a *Client secret*, again make a note of it.
 
-Once you have an application, there will be a tabs which include Details and Testing Credentials.  Add `https://localhost` to the *Redirect URI* section of the Details tab.  Don't forget to click `Save Changes` at the bottom.
+You can now select *View your application details*
 
-In the *Subscriptions* tab, subscribe to `Common Transit Convention Traders` and to `Create Test User` in the 'APIs for testing your service' section.
+Once you have an application, there will be tabs which include Details and Testing Credentials.  
+Add `https://localhost` as a *Redirect URI* from the *Redirect URIs* menu.
 
 You will need the Client ID and Secret from the *Testing Credentials* tab for the configuration below.
 
