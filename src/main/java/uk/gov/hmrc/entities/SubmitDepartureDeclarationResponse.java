@@ -22,10 +22,10 @@ public class SubmitDepartureDeclarationResponse implements Serializable {
     }
 
     @JsonProperty("departureId")
-    @Setter @Getter String id;
+    @Setter @Getter String id = "not implemented yet";
 
     @JsonProperty("messageType")
-    @Setter @Getter String messageType;
+    @Setter @Getter String messageType = "not implemented yet";
 
     @JsonProperty("_links")
     @Setter @Getter Links links;

@@ -32,11 +32,11 @@ public class DepartureDeclarationForm extends Form<DepartureDeclaration> {
         try {
             SubmitDepartureDeclarationResponse response = service.createDepartureMovement(declaration.getEori());
             info("Submitted declaration successfully");
-            info("Movement id: "+response.getId());
-            info("Movement reference: "+response.getLinks().getSelf().getHref());
+//            info("Movement id: "+response.getId());
+//            info("Movement reference: "+response.getLinks().getSelf().getHref());
         } catch(Exception e){
             log.error("Unable to submit the declaration: "+e.getMessage(), e);
-            error(e.getMessage());
+            error(e);
         }
     }
 }
