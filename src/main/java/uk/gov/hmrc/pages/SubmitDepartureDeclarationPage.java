@@ -15,35 +15,19 @@
  */
 package uk.gov.hmrc.pages;
 
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.wicketstuff.datetime.StyleDateConverter;
-import org.wicketstuff.datetime.markup.html.basic.DateLabel;
-import uk.gov.hmrc.services.AuthService;
-
-import java.time.ZoneOffset;
-import java.util.Date;
+import org.springframework.beans.factory.annotation.Autowired;
+import uk.gov.hmrc.components.DepartureDeclarationForm;
+import uk.gov.hmrc.services.CTCTradersService;
 
 public class SubmitDepartureDeclarationPage extends UserRestrictedPage {
     private static final long serialVersionUID = 1L;
 
-    @SpringBean
-    AuthService authService;
-
     public SubmitDepartureDeclarationPage(final PageParameters parameters) {
         super(parameters);
-
-        Label currentAccessToken = new DateLabel("accessValidUntil", new LoadableDetachableModel() {
-
-            @Override
-            protected Date load() {
-                return Date.from(authService.getCurrentOauthPair().getAccessValidUntil().toInstant(ZoneOffset.UTC));
-            }
-        }, new StyleDateConverter("MM", true));
-
-        add(currentAccessToken);
+        add(new FeedbackPanel("feedback"));
+        add(new DepartureDeclarationForm("form"));
     }
 }
 

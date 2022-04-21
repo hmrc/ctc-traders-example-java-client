@@ -3,13 +3,19 @@ server:
     
 logging:
     level:
-        uk.gov.hmrc: DEBUG
-
+        root: ERROR
+        uk:
+            gov:
+                hmrc: TRACE
 tax:
-    authUrl: https://test-api.service.hmrc.gov.uk/
+    authHost: https://test-api.service.hmrc.gov.uk
+    apiHost: https://test-api.service.hmrc.gov.uk
+    authUrl: ${tax.authHost}/
     redirectUrl: https://localhost
     scope: common-transit-convention-traders
-    submitIE015Url: ${tax.authUrl}customs/transits/movements/departures
+    submitDepartureDeclarationUrl: ${tax.apiHost}/customs/transits/movements/departures
     secret: change-me
     clientId: change-me
+    acceptHeader: application/vnd.hmrc.2.0+json
+
 
