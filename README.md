@@ -182,6 +182,9 @@ See the [Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/
 ### Submit Departure Declaration
 ![Kiku](./images/submit-departure-declaration.png)
 
+## Further information
+See https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-service-guide/
+
 ## License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
