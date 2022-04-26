@@ -183,7 +183,7 @@ See the [Developer Hub](https://developer.service.hmrc.gov.uk/api-documentation/
 ![Kiku](./images/submit-departure-declaration.png)
 
 ## Further information
-See https://github.com/hmrc/ctc-traders-phase5-service-guide
+See https://developer.service.hmrc.gov.uk/guides/ctc-traders-phase5-service-guide/
 
 ## License
 
