@@ -6,5 +6,5 @@ import lombok.Setter;
 import java.io.Serializable;
 
 public class DepartureDeclaration implements Serializable {
-    @Getter @Setter private String eori;
+    @Getter @Setter private String identificationNumber;
 }

@@ -17,9 +17,7 @@ package uk.gov.hmrc.pages;
 
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.springframework.beans.factory.annotation.Autowired;
 import uk.gov.hmrc.components.DepartureDeclarationForm;
-import uk.gov.hmrc.services.CTCTradersService;
 
 public class SubmitDepartureDeclarationPage extends UserRestrictedPage {
     private static final long serialVersionUID = 1L;

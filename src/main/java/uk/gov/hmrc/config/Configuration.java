@@ -88,7 +88,7 @@ public class Configuration {
         }
     }
 
-    @Value("classpath:xml/CC015B.xml")
+    @Value("classpath:xml/CC015C.xml")
     Resource cc015cTemplate;
 
     @Bean
