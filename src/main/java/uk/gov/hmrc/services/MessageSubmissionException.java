@@ -21,6 +21,7 @@ import lombok.Setter;
 
 @AllArgsConstructor
 public class MessageSubmissionException extends Exception {
+    @Getter @Setter int statusCode;
     @Getter @Setter String status;
     @Getter @Setter String message;
 }

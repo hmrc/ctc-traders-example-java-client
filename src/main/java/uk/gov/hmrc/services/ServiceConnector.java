@@ -90,7 +90,7 @@ public class ServiceConnector {
             }
             catch (HttpClientErrorException | HttpServerErrorException e) {
                 log.warn(e);
-                throw new MessageSubmissionException(e.getStatusCode().getReasonPhrase(), e.getMessage());
+                throw new MessageSubmissionException(e.getStatusCode().value(), e.getStatusCode().getReasonPhrase(), e.getResponseBodyAsString());
             }
     }
 

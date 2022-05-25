@@ -18,6 +18,7 @@ package uk.gov.hmrc.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import uk.gov.hmrc.entities.DepartureDeclaration;
 import uk.gov.hmrc.entities.SubmitDepartureDeclarationResponse;
 
 import java.text.DateFormat;
@@ -36,8 +37,8 @@ public class CTCTradersService {
     @Autowired @Qualifier("cc015")
     private String cc015Template;
 
-    public SubmitDepartureDeclarationResponse createDepartureMovement(String eori) throws MessageSubmissionException {
-        String payload = cc015Template.replaceAll("\\{eori}", eori).replaceAll("\\{now}", now());
+    public SubmitDepartureDeclarationResponse createDepartureMovement(DepartureDeclaration declaration) throws MessageSubmissionException {
+        String payload = cc015Template.replaceAll("\\{eori}", declaration.getIdentificationNumber()).replaceAll("\\{now}", now());
         return serviceConnector.createDepartureMovement(payload, Optional.of(authService.getCurrentOauthPair().getAccessToken()));
     }
 

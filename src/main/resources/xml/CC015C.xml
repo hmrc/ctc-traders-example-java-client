@@ -24,7 +24,7 @@
     <Address>
       <streetAndNumber>Q9YOLKAgZUVCw3dGAmsW1EaGQGChFeASYBfOEMDJ6yfIPEFXkFt9rQ7mEUpZMO9ugU0j</streetAndNumber>
       <city>ICLAffZcVXJJYnjNRbW94</city>
-      <country>Gh</country>
+      <country>GB</country>
     </Address>
     <ContactPerson>
       <name>gtudjvWywUuNADDTFC4iYlHq9oQ</name>
@@ -33,7 +33,7 @@
   </HolderOfTheTransitProcedure>
   <Guarantee>
     <sequenceNumber>51159</sequenceNumber>
-    <guaranteeType>f</guaranteeType>
+    <guaranteeType>F</guaranteeType>
   </Guarantee>
   <Consignment>
     <grossMass>3006961631.286343</grossMass>
