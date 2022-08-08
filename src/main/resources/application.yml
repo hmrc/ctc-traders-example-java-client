@@ -14,6 +14,7 @@ tax:
     redirectUrl: https://localhost
     scope: common-transit-convention-traders
     submitDepartureDeclarationUrl: ${tax.apiHost}/customs/transits/movements/departures
+    getSingleDepartureMessageUrl: ${tax.apiHost}/customs/transits/movements/departures/{departureId}/messages/{messageId}
     secret: change-me
     clientId: change-me
     acceptHeader: application/vnd.hmrc.2.0+json
