@@ -40,8 +40,8 @@ public class DepartureDeclarationForm extends Form<DepartureDeclaration> {
             SubmitDepartureDeclarationResponse response = service.createDepartureMovement(declaration);
             info("Submitted declaration successfully");
             log.debug(response);
-//            info("Movement id: "+response.getId());
-//            info("Movement reference: "+response.getLinks().getSelf().getHref());
+            info("Movement id: " + response.getId());
+            info("Movement reference: " + response.getLinks().getSelf().getHref());
         } catch(MessageSubmissionException e){
             log.error("Unable to submit the declaration: "+e.getMessage(), e);
             ValidationErrors errors = formatError(e);

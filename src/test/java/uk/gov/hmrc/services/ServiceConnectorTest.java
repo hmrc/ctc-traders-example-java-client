@@ -71,7 +71,7 @@ public class ServiceConnectorTest {
     @Test
     public void shouldCreateNewDepartureMovement() throws Exception {
         Optional<String> accessToken = Optional.of("abcdefghijklmno");
-        SubmitDepartureDeclarationResponse responseObject = new SubmitDepartureDeclarationResponse("abc123", "IE015", "/departures/abc123");
+        SubmitDepartureDeclarationResponse responseObject = new SubmitDepartureDeclarationResponse("abc123", "/departures/abc123");
         given(restTemplate.postForObject(eq(sut.submitDepartureDeclarationUrl), entity.capture(), eq(SubmitDepartureDeclarationResponse.class))).willReturn(responseObject);
 
         SubmitDepartureDeclarationResponse result = sut.createDepartureMovement("<CC015C></CC015C>", accessToken);
