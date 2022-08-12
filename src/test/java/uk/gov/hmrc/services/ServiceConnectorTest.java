@@ -22,18 +22,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
+import uk.gov.hmrc.entities.GetSingleDepartureMessageResponse;
+import uk.gov.hmrc.entities.Links;
+import uk.gov.hmrc.entities.Self;
 import uk.gov.hmrc.entities.SubmitDepartureDeclarationResponse;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -50,7 +53,7 @@ public class ServiceConnectorTest {
     @Mock
     RestTemplate restTemplate;
     @Captor
-    ArgumentCaptor<HttpEntity<String>> entity;
+    ArgumentCaptor<HttpEntity<?>> entity;
 
     @MockBean
     ServiceConnector sut;
@@ -66,21 +69,31 @@ public class ServiceConnectorTest {
         sut = new ServiceConnector(restTemplate, mapper);
         sut.PHASE5_ACCEPT_HEADER = "application/vnd.hmrc.2.0+json";
         sut.submitDepartureDeclarationUrl = "http://somewhere.over/the/rainbow";
+        sut.getSingleDepartureMessageUrl = "http://somewhere.over/the/rainbow";
     }
 
     @Test
     public void shouldCreateNewDepartureMovement() throws Exception {
         Optional<String> accessToken = Optional.of("abcdefghijklmno");
         SubmitDepartureDeclarationResponse responseObject = new SubmitDepartureDeclarationResponse("abc123", "/departures/abc123");
-        given(restTemplate.postForObject(eq(sut.submitDepartureDeclarationUrl), entity.capture(), eq(SubmitDepartureDeclarationResponse.class))).willReturn(responseObject);
+        given(restTemplate.exchange(eq(sut.submitDepartureDeclarationUrl), eq(HttpMethod.POST), entity.capture(), eq(SubmitDepartureDeclarationResponse.class))).willReturn(ResponseEntity.of(Optional.of(responseObject)));
 
         SubmitDepartureDeclarationResponse result = sut.createDepartureMovement("<CC015C></CC015C>", accessToken);
 
         assertThat(result, equalTo(responseObject));
         HttpHeaders headers = entity.getValue().getHeaders();
-        assertThat(headers.get("Authorization"), hasItem("Bearer " + accessToken.get()));
-        assertThat(headers.getAccept(), hasItem(MediaType.valueOf(sut.PHASE5_ACCEPT_HEADER)));
         assertThat(headers.getContentType(), is(MediaType.APPLICATION_XML));
+    }
+
+    @Test
+    public void shouldRetrieveMessage() throws Exception {
+        Optional<String> accessToken = Optional.of("abcdefghijklmno");
+        GetSingleDepartureMessageResponse responseObject = new GetSingleDepartureMessageResponse("body", new Links(new Self("self")));
+        given(restTemplate.exchange(eq(sut.getSingleDepartureMessageUrl), eq(HttpMethod.GET), ArgumentMatchers.isNull(), eq(GetSingleDepartureMessageResponse.class), ArgumentMatchers.anyMap())).willReturn(ResponseEntity.of(Optional.of(responseObject)));
+
+        GetSingleDepartureMessageResponse result = sut.getSingleDepartureMessage("a", "b", accessToken);
+
+        assertThat(result, equalTo(responseObject));
     }
 
 }
