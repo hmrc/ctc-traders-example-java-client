@@ -7,9 +7,9 @@ import lombok.Data;
 public class GetSingleDepartureMessageResponse {
 
     @JsonProperty("body")
-    private final String body;
+    private String body;
 
     @JsonProperty("_links")
-    private final Links links;
+    private Links links;
 
 }

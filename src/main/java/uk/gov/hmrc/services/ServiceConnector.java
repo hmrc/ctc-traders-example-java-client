@@ -109,7 +109,7 @@ public class ServiceConnector {
                 Map.entry("messageId", messageId)
         );
         try {
-            final var response = request(HttpMethod.GET, submitDepartureDeclarationUrl, uriParameters, null, GetSingleDepartureMessageResponse.class, accessToken);
+            final var response = request(HttpMethod.GET, getSingleDepartureMessageUrl, uriParameters, null, GetSingleDepartureMessageResponse.class, accessToken);
             if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new NotFoundException();
             }

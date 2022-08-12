@@ -122,7 +122,7 @@ The application is based on Spring Boot.  Assuming you have java 11 and maven in
 
 ```
 cd ctc-traders-example-java-client
-mvn clean spring-boot:run -Dspring-boot.run.arguments="--tax.clientId=[YOUR CLIENT ID] --tax.secret=[YOUR SECRET]"
+`mvn clean spring-boot:run -Dspring-boot.run.arguments="--tax.clientId=[YOUR CLIENT ID] --tax.secret=[YOUR SECRET]"`
 ```
 
 Obviously, change the values for your client id and your secret.
