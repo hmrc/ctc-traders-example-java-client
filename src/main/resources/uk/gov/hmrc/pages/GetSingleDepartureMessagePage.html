@@ -12,13 +12,9 @@
 </section>
 <main class="container main">
     <span wicket:id="feedback"></span>
-    <form wicket:id="form">
-            Departure ID (16 character hexadecimal string)
-            <input type="text" wicket:id="departureId"/><br/>
-            Message ID (16 character hexadecimal string)
-            <input type="text" wicket:id="messageId"/><br/>
-            <button>Submit Departure Declaration</button>
-
+    <form wicket:id="form" class="form-uri-inline">
+        <label wicket:for="departureId">ID: /customs/transits/movements/departures/</label><input type="text" wicket:id="departureId"/><label wicket:for="messageId">/messages/</label><input type="text" wicket:id="messageId"/>
+        <button>Get Message</button>
     </form>
 </main>
 </wicket:extend>

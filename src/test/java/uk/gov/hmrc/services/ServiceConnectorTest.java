@@ -36,12 +36,10 @@ import uk.gov.hmrc.entities.Links;
 import uk.gov.hmrc.entities.Self;
 import uk.gov.hmrc.entities.SubmitDepartureDeclarationResponse;
 
-import java.util.Map;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.eq;
 import static org.mockito.BDDMockito.given;
@@ -75,7 +73,7 @@ public class ServiceConnectorTest {
     @Test
     public void shouldCreateNewDepartureMovement() throws Exception {
         Optional<String> accessToken = Optional.of("abcdefghijklmno");
-        SubmitDepartureDeclarationResponse responseObject = new SubmitDepartureDeclarationResponse("abc123", "/departures/abc123");
+        SubmitDepartureDeclarationResponse responseObject = new SubmitDepartureDeclarationResponse("/departures/abc123");
         given(restTemplate.exchange(eq(sut.submitDepartureDeclarationUrl), eq(HttpMethod.POST), entity.capture(), eq(SubmitDepartureDeclarationResponse.class))).willReturn(ResponseEntity.of(Optional.of(responseObject)));
 
         SubmitDepartureDeclarationResponse result = sut.createDepartureMovement("<CC015C></CC015C>", accessToken);
