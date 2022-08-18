@@ -6,6 +6,7 @@ This version of the code so far only demonstrates how to:
 - redirect to the Government Gateway sign-in pages
 - submit a sample IE015 XML
 - get a specific message with a known Departure ID and Message ID
+- get departure details with a known Departure ID
 
 We are working on other pages to retrieve and updated departure movements.
 

@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import uk.gov.hmrc.entities.DepartureDeclaration;
+import uk.gov.hmrc.entities.GetDepartureRequest;
+import uk.gov.hmrc.entities.GetDepartureResponse;
 import uk.gov.hmrc.entities.GetSingleDepartureMessageRequest;
 import uk.gov.hmrc.entities.GetSingleDepartureMessageResponse;
 import uk.gov.hmrc.entities.SubmitDepartureDeclarationResponse;
@@ -46,6 +48,10 @@ public class CTCTradersService {
 
     public GetSingleDepartureMessageResponse getMessageForDeparture(GetSingleDepartureMessageRequest request) throws RequestException, NotFoundException, UnauthorizedException {
         return serviceConnector.getSingleDepartureMessage(request.getDepartureId(), request.getMessageId(), Optional.of(authService.getCurrentOauthPair().getAccessToken()));
+    }
+
+    public GetDepartureResponse getDeparture(GetDepartureRequest request) throws RequestException, NotFoundException, UnauthorizedException {
+        return serviceConnector.getDeparture(request.getDepartureId(), Optional.of(authService.getCurrentOauthPair().getAccessToken()));
     }
 
     public String now(){

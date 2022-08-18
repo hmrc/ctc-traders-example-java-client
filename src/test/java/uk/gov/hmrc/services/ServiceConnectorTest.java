@@ -31,6 +31,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
+
+import uk.gov.hmrc.entities.GetDepartureResponse;
 import uk.gov.hmrc.entities.GetSingleDepartureMessageResponse;
 import uk.gov.hmrc.entities.Links;
 import uk.gov.hmrc.entities.Self;
@@ -59,6 +61,8 @@ public class ServiceConnectorTest {
     @MockBean
     ObjectMapper mapper;
 
+    private final String ACCESS_TOKEN_VALUE = "abcdefghijklmno";
+
     @BeforeEach
     public void setUp() {
         mapper = new ObjectMapper();
@@ -72,7 +76,7 @@ public class ServiceConnectorTest {
 
     @Test
     public void shouldCreateNewDepartureMovement() throws Exception {
-        Optional<String> accessToken = Optional.of("abcdefghijklmno");
+        Optional<String> accessToken = Optional.of(ACCESS_TOKEN_VALUE);
         SubmitDepartureDeclarationResponse responseObject = new SubmitDepartureDeclarationResponse("/departures/abc123");
         given(restTemplate.exchange(eq(sut.submitDepartureDeclarationUrl), eq(HttpMethod.POST), entity.capture(), eq(SubmitDepartureDeclarationResponse.class))).willReturn(ResponseEntity.of(Optional.of(responseObject)));
 
@@ -85,11 +89,30 @@ public class ServiceConnectorTest {
 
     @Test
     public void shouldRetrieveMessage() throws Exception {
-        Optional<String> accessToken = Optional.of("abcdefghijklmno");
+        Optional<String> accessToken = Optional.of(ACCESS_TOKEN_VALUE);
         GetSingleDepartureMessageResponse responseObject = new GetSingleDepartureMessageResponse("body", new Links(new Self("self")));
         given(restTemplate.exchange(eq(sut.getSingleDepartureMessageUrl), eq(HttpMethod.GET), ArgumentMatchers.isNull(), eq(GetSingleDepartureMessageResponse.class), ArgumentMatchers.anyMap())).willReturn(ResponseEntity.of(Optional.of(responseObject)));
 
         GetSingleDepartureMessageResponse result = sut.getSingleDepartureMessage("a", "b", accessToken);
+
+        assertThat(result, equalTo(responseObject));
+    }
+
+    @Test
+    public void shouldRetrieveDeparture() throws Exception {
+        Optional<String> accessToken = Optional.of(ACCESS_TOKEN_VALUE);
+        GetDepartureResponse responseObject = new GetDepartureResponse(
+            new Links(new Self("self")),
+            "id", 
+            "created", 
+            "updated", 
+            "enrollmentEORINumber",
+            "movementEORINumber", 
+            "movementReferenceNumber");
+
+        given(restTemplate.exchange(eq(sut.getDepartureUrl), eq(HttpMethod.GET), ArgumentMatchers.isNull(), eq(GetDepartureResponse.class), ArgumentMatchers.anyMap())).willReturn(ResponseEntity.of(Optional.of(responseObject)));
+
+        GetDepartureResponse result = sut.getDeparture("a", accessToken);
 
         assertThat(result, equalTo(responseObject));
     }
