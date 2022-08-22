@@ -38,6 +38,8 @@ import uk.gov.hmrc.entities.GetSingleDepartureMessageResponse;
 import uk.gov.hmrc.entities.SubmitDepartureDeclarationResponse;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -113,11 +115,11 @@ public class ServiceConnector {
             }
     }
 
-    public GetDepartureMessageIdsResponse getDepartureMessageIds(String departureId, Optional<Date> date,  Optional<String> accessToken) throws RequestException, NotFoundException, UnauthorizedException {
+    public GetDepartureMessageIdsResponse getDepartureMessageIds(String departureId, Optional<ZonedDateTime> date, Optional<String> accessToken) throws RequestException, NotFoundException, UnauthorizedException {
         logger.trace("Getting message IDs for departure ID {}", departureId);
         final var uriParameters = new ArrayList<Map.Entry<String, String>>();
         uriParameters.add(Map.entry("departureId", departureId));
-        date.ifPresent(d -> uriParameters.add(Map.entry("receivedSince", DateTimeFormatter.ISO_DATE_TIME.format(d.toInstant()))));
+        uriParameters.add(Map.entry("receivedSince", date.map(d -> DateTimeFormatter.ISO_DATE_TIME.format(d.toOffsetDateTime())).orElse("")));
 
         final var map = uriParameters.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         try {

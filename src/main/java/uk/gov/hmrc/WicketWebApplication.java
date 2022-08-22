@@ -92,7 +92,7 @@ public class WicketWebApplication extends WebApplication {
         setRootRequestMapper(new HttpsMapper(getRootRequestMapper(), new HttpsConfig()));
 
         mountPage("/departures", SubmitDepartureDeclarationPage.class);
-        mountPage("/departures/messages", GetDepartureMessageIdsPage.class);
+        mountPage("/departures/messages", GetMessageIdsForDeparturePage.class);
         mountPage("/departures/message", GetSingleDepartureMessagePage.class);
         mountPage("/departures/item", GetDeparturePage.class);
 

@@ -2,22 +2,22 @@ package uk.gov.hmrc.components;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.apachecommons.CommonsLog;
+import org.apache.wicket.extensions.markup.html.form.datetime.ZonedDateTimeField;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.wicketstuff.datetime.extensions.yui.calendar.DateTimeField;
 import uk.gov.hmrc.entities.GetDepartureMessageIdsRequest;
-import uk.gov.hmrc.entities.GetSingleDepartureMessageRequest;
-import uk.gov.hmrc.entities.GetSingleDepartureMessageResponse;
+import uk.gov.hmrc.entities.MessageId;
 import uk.gov.hmrc.services.CTCTradersService;
 import uk.gov.hmrc.services.NotFoundException;
 import uk.gov.hmrc.services.RequestException;
 import uk.gov.hmrc.services.UnauthorizedException;
 
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.util.stream.Collectors;
 
 @CommonsLog
 public class GetDepartureMessageIdsForm extends Form<GetDepartureMessageIdsRequest> {
@@ -31,8 +31,8 @@ public class GetDepartureMessageIdsForm extends Form<GetDepartureMessageIdsReque
     public GetDepartureMessageIdsForm(String id) {
         super(id, new CompoundPropertyModel<>(new GetDepartureMessageIdsRequest()));
         add(new RequiredTextField<String>("departureId"));
-        add(new CheckBox("receivedSince-filter"));
-        add(new DateTimeField("receivedSince"));
+//        add(new CheckBox("receivedSinceFilter"));
+//        add(new ZonedDateTimeField("receivedSince"));
     }
 
     @Override
@@ -41,8 +41,9 @@ public class GetDepartureMessageIdsForm extends Form<GetDepartureMessageIdsReque
         final GetDepartureMessageIdsRequest request = (GetDepartureMessageIdsRequest) getDefaultModelObject();
         log.debug("Declaration Data form submitted.");
         log.debug("* Departure ID: " + request.getDepartureId());
-        log.debug("* Recieved Since Filter: " + request.getDate()
-                .map(Date::toInstant)
+        log.debug("* Received Since Filter: " + request
+                .getDate()
+                .map(ZonedDateTime::toOffsetDateTime)
                 .map(DateTimeFormatter.ISO_DATE_TIME::format)
                 .orElse("not specified")
         );
@@ -50,7 +51,7 @@ public class GetDepartureMessageIdsForm extends Form<GetDepartureMessageIdsReque
             var response = service.getMessageIdsForDeparture(request);
             info("Returned message successfully.");
             log.debug(response);
-            info("Message IDs: " + response.getMessages());
+            info("Message IDs: <br />" + response.getMessages().stream().map(MessageId::getId).collect(Collectors.joining("<br />")));
         } catch (UnauthorizedException e) {
             log.error("Unable to get message IDs: server returned unauthorised");
             error("Unable to get message IDs: server returned unauthorised");

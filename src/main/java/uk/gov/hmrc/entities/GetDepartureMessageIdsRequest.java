@@ -2,26 +2,26 @@ package uk.gov.hmrc.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @Data
 public class GetDepartureMessageIdsRequest implements Serializable {
 
-    @JsonProperty("id")
+    @JsonProperty("departureId")
     private String departureId;
 
-    @JsonProperty("receivedSince-enabled")
-    private boolean filterOnDate;
+    @JsonProperty("receivedSinceFilter")
+    private boolean filterOnDate = false;
 
-    @Nullable
     @JsonProperty("receivedSince")
-    private Date receivedSince;
+    private ZonedDateTime receivedSince = ZonedDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC);
 
-    public Optional<Date> getDate() {
+    public Optional<ZonedDateTime> getDate() {
         if (filterOnDate) {
             return Optional.ofNullable(this.receivedSince);
         }
