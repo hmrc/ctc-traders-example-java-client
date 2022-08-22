@@ -32,6 +32,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import uk.gov.hmrc.entities.GetDepartureResponse;
 import uk.gov.hmrc.entities.GetSingleDepartureMessageResponse;
 import uk.gov.hmrc.entities.SubmitDepartureDeclarationResponse;
 
@@ -53,6 +54,9 @@ public class ServiceConnector {
 
     @Value("${tax.getSingleDepartureMessageUrl}")
     protected String getSingleDepartureMessageUrl;
+
+    @Value("${tax.getDepartureUrl}")
+    protected String getDepartureUrl;
 
     public ServiceConnector(@Autowired @Qualifier("plainRestTemplate") RestTemplate restTemplate,
                             @Autowired ObjectMapper objectMapper) {
@@ -110,6 +114,26 @@ public class ServiceConnector {
         );
         try {
             final var response = request(HttpMethod.GET, getSingleDepartureMessageUrl, uriParameters, null, GetSingleDepartureMessageResponse.class, accessToken);
+            if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new NotFoundException();
+            }
+            return response.getBody();
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new NotFoundException();
+            }
+            log.warn(e);
+            throw new RequestException(e.getStatusCode().value(), e.getStatusCode().getReasonPhrase(), e.getResponseBodyAsString());
+        }
+    }
+    public GetDepartureResponse getDeparture(String departureId, Optional<String> accessToken) throws RequestException, NotFoundException, UnauthorizedException {
+        logger.trace("Getting departure ID {}", departureId);
+        final var uriParameters = Map.ofEntries(
+            Map.entry("departureId", departureId)
+        );
+        try {
+            final var response = request(HttpMethod.GET, getDepartureUrl, uriParameters, null, GetDepartureResponse.class, accessToken);
             if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
                 throw new NotFoundException();
             }
