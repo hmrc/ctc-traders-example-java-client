@@ -18,12 +18,7 @@ package uk.gov.hmrc.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import uk.gov.hmrc.entities.DepartureDeclaration;
-import uk.gov.hmrc.entities.GetDepartureRequest;
-import uk.gov.hmrc.entities.GetDepartureResponse;
-import uk.gov.hmrc.entities.GetSingleDepartureMessageRequest;
-import uk.gov.hmrc.entities.GetSingleDepartureMessageResponse;
-import uk.gov.hmrc.entities.SubmitDepartureDeclarationResponse;
+import uk.gov.hmrc.entities.*;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -44,6 +39,10 @@ public class CTCTradersService {
     public SubmitDepartureDeclarationResponse createDepartureMovement(DepartureDeclaration declaration) throws RequestException, UnauthorizedException {
         String payload = cc015Template.replace("{eori}", declaration.getIdentificationNumber()).replace("{now}", now());
         return serviceConnector.createDepartureMovement(payload, Optional.of(authService.getCurrentOauthPair().getAccessToken()));
+    }
+
+    public GetDepartureMessageIdsResponse getMessageIdsForDeparture(GetDepartureMessageIdsRequest request) throws RequestException, NotFoundException, UnauthorizedException {
+        return serviceConnector.getDepartureMessageIds(request.getDepartureId(), request.getDate(), Optional.of(authService.getCurrentOauthPair().getAccessToken()));
     }
 
     public GetSingleDepartureMessageResponse getMessageForDeparture(GetSingleDepartureMessageRequest request) throws RequestException, NotFoundException, UnauthorizedException {

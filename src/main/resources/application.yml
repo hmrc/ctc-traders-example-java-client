@@ -14,6 +14,7 @@ tax:
     redirectUrl: https://localhost
     scope: common-transit-convention-traders
     submitDepartureDeclarationUrl: ${tax.apiHost}/customs/transits/movements/departures
+    getDepartureMessageIDsUrl: ${tax.apiHost}/customs/transits/movements/departures/{departureId}/messages?receivedSince={receivedSince}
     getSingleDepartureMessageUrl: ${tax.apiHost}/customs/transits/movements/departures/{departureId}/messages/{messageId}
     getDepartureUrl: ${tax.apiHost}/customs/transits/movements/departures/{departureId}
     secret: change-me

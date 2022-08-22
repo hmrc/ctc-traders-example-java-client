@@ -32,12 +32,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import uk.gov.hmrc.entities.GetDepartureMessageIdsResponse;
 import uk.gov.hmrc.entities.GetDepartureResponse;
 import uk.gov.hmrc.entities.GetSingleDepartureMessageResponse;
 import uk.gov.hmrc.entities.SubmitDepartureDeclarationResponse;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @CommonsLog
@@ -51,6 +54,10 @@ public class ServiceConnector {
 
     @Value("${tax.submitDepartureDeclarationUrl}")
     protected String submitDepartureDeclarationUrl;
+
+
+    @Value("${tax.getDepartureMessageIDsUrl}")
+    protected String getDepartureMessageIDsUrl;
 
     @Value("${tax.getSingleDepartureMessageUrl}")
     protected String getSingleDepartureMessageUrl;
@@ -104,6 +111,29 @@ public class ServiceConnector {
                 log.warn(e);
                 throw new RequestException(e.getStatusCode().value(), e.getStatusCode().getReasonPhrase(), e.getResponseBodyAsString());
             }
+    }
+
+    public GetDepartureMessageIdsResponse getDepartureMessageIds(String departureId, Optional<Date> date,  Optional<String> accessToken) throws RequestException, NotFoundException, UnauthorizedException {
+        logger.trace("Getting message IDs for departure ID {}", departureId);
+        final var uriParameters = new ArrayList<Map.Entry<String, String>>();
+        uriParameters.add(Map.entry("departureId", departureId));
+        date.ifPresent(d -> uriParameters.add(Map.entry("receivedSince", DateTimeFormatter.ISO_DATE_TIME.format(d.toInstant()))));
+
+        final var map = uriParameters.stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        try {
+            final var response = request(HttpMethod.GET, getDepartureMessageIDsUrl, map, null, GetDepartureMessageIdsResponse.class, accessToken);
+            if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new NotFoundException();
+            }
+            return response.getBody();
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new NotFoundException();
+            }
+            log.warn(e);
+            throw new RequestException(e.getStatusCode().value(), e.getStatusCode().getReasonPhrase(), e.getResponseBodyAsString());
+        }
     }
 
     public GetSingleDepartureMessageResponse getSingleDepartureMessage(String departureId, String messageId, Optional<String> accessToken) throws RequestException, NotFoundException, UnauthorizedException {

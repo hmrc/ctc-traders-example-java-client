@@ -36,10 +36,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
-import uk.gov.hmrc.pages.GetDeparturePage;
-import uk.gov.hmrc.pages.GetSingleDepartureMessagePage;
-import uk.gov.hmrc.pages.HomePage;
-import uk.gov.hmrc.pages.SubmitDepartureDeclarationPage;
+import uk.gov.hmrc.pages.*;
 
 import java.time.LocalDate;
 
@@ -95,6 +92,7 @@ public class WicketWebApplication extends WebApplication {
         setRootRequestMapper(new HttpsMapper(getRootRequestMapper(), new HttpsConfig()));
 
         mountPage("/departures", SubmitDepartureDeclarationPage.class);
+        mountPage("/departures/messages", GetDepartureMessageIdsPage.class);
         mountPage("/departures/message", GetSingleDepartureMessagePage.class);
         mountPage("/departures/item", GetDeparturePage.class);
 

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://www.w3.org/1999/xhtml" lang="en">
+<body>
+<wicket:extend>
+<section class="hero">
+    <div class="container">
+        <header>
+            <h1 class="hero--heading">Get Departure Message IDs</h1>
+        </header>
+        <p class="hero--text">Get the message IDs for a departure in the HMRC Sandbox</p>
+    </div>
+</section>
+<main class="container main">
+    <span wicket:id="feedback"></span>
+    <form wicket:id="form" class="form-uri-inline">
+        <p>
+            <label wicket:for="departureId">ID: /customs/transits/movements/departures/</label><input type="text" wicket:id="departureId"/>/messages
+        </p>
+        <p>
+            <label wicket:for="receivedSince-filter">Enable received since filter: </label><input type="checkbox" wicket:id="receivedSince-filter"/>
+        </p>
+        <p>
+            <label wicket:for="receivedSince">Received Since: </label><input type="datetime-local" wicket:id="receivedSince"/>
+        </p>
+        <button>Get Message IDs</button>
+    </form>
+</main>
+</wicket:extend>
+</body>
+</html>
