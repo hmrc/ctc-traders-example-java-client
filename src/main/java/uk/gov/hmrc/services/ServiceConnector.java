@@ -22,27 +22,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.support.HttpRequestWrapper;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import uk.gov.hmrc.entities.GetSingleDepartureMessageResponse;
 import uk.gov.hmrc.entities.SubmitDepartureDeclarationResponse;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 @CommonsLog
@@ -57,41 +51,83 @@ public class ServiceConnector {
     @Value("${tax.submitDepartureDeclarationUrl}")
     protected String submitDepartureDeclarationUrl;
 
+    @Value("${tax.getSingleDepartureMessageUrl}")
+    protected String getSingleDepartureMessageUrl;
+
     public ServiceConnector(@Autowired @Qualifier("plainRestTemplate") RestTemplate restTemplate,
                             @Autowired ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.mapper = objectMapper;
     }
 
-    public String get(String url, Optional<String> accessToken) throws UnauthorizedException {
-        List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
-        interceptors.add(new HeaderRequestInterceptor(accessToken, PHASE5_ACCEPT_HEADER));
-        restTemplate.setInterceptors(interceptors);
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-        if (response.getStatusCode() == HttpStatus.UNAUTHORIZED) {
-            throw new UnauthorizedException();
+    protected <T> ResponseEntity<T> request(
+            HttpMethod method,
+            String url,
+            @Nullable Map<String, String> uriParameters,
+            @Nullable HttpEntity<?> requestBody,
+            Class<T> responseType,
+            Optional<String> accessToken
+    ) throws UnauthorizedException {
+        try {
+            restTemplate.setInterceptors(List.of(new HeaderRequestInterceptor(accessToken, PHASE5_ACCEPT_HEADER)));
+            final ResponseEntity<T> response;
+            if (uriParameters == null) {
+                response = restTemplate.exchange(url, method, requestBody, responseType);
+            } else {
+                response = restTemplate.exchange(url, method, requestBody, responseType, uriParameters);
+            }
+
+            return response;
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new UnauthorizedException();
+            }
+            throw e;
+        } finally {
+            restTemplate.setInterceptors(List.of());
         }
-        return response.getBody();
     }
 
-    public SubmitDepartureDeclarationResponse createDepartureMovement(String xml, Optional<String> accessToken) throws MessageSubmissionException {
+    public SubmitDepartureDeclarationResponse createDepartureMovement(String xml, Optional<String> accessToken) throws RequestException, UnauthorizedException {
             logger.trace("Sending payload >>" + xml + "<<");
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.setAccept(Arrays.asList(MediaType.valueOf(PHASE5_ACCEPT_HEADER)));
-            headers.setContentType(MediaType.APPLICATION_XML);
-            accessToken.ifPresent(token -> headers.set("Authorization", "Bearer " + token));
-
-            logger.debug(String.valueOf(headers));
-
+            final var headers = contentTypeHeaders(MediaType.APPLICATION_XML);
             HttpEntity<String> entity = new HttpEntity<>(xml, headers);
             try {
-                return restTemplate.postForObject(submitDepartureDeclarationUrl, entity, SubmitDepartureDeclarationResponse.class);
+                return request(HttpMethod.POST, submitDepartureDeclarationUrl, null, entity, SubmitDepartureDeclarationResponse.class, accessToken).getBody();
             }
             catch (HttpClientErrorException | HttpServerErrorException e) {
                 log.warn(e);
-                throw new MessageSubmissionException(e.getStatusCode().value(), e.getStatusCode().getReasonPhrase(), e.getResponseBodyAsString());
+                throw new RequestException(e.getStatusCode().value(), e.getStatusCode().getReasonPhrase(), e.getResponseBodyAsString());
             }
+    }
+
+    public GetSingleDepartureMessageResponse getSingleDepartureMessage(String departureId, String messageId, Optional<String> accessToken) throws RequestException, NotFoundException, UnauthorizedException {
+        logger.trace("Getting message ID {} for departure ID {}", messageId, departureId);
+        final var uriParameters = Map.ofEntries(
+                Map.entry("departureId", departureId),
+                Map.entry("messageId", messageId)
+        );
+        try {
+            final var response = request(HttpMethod.GET, getSingleDepartureMessageUrl, uriParameters, null, GetSingleDepartureMessageResponse.class, accessToken);
+            if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new NotFoundException();
+            }
+            return response.getBody();
+        }
+        catch (HttpClientErrorException | HttpServerErrorException e) {
+            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new NotFoundException();
+            }
+            log.warn(e);
+            throw new RequestException(e.getStatusCode().value(), e.getStatusCode().getReasonPhrase(), e.getResponseBodyAsString());
+        }
+    }
+
+    private HttpHeaders contentTypeHeaders(MediaType mediaType) {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(mediaType);
+        return headers;
     }
 
     static class HeaderRequestInterceptor implements ClientHttpRequestInterceptor {
@@ -108,9 +144,14 @@ public class ServiceConnector {
         public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
                 throws IOException {
             HttpRequest wrapper = new HttpRequestWrapper(request);
-            accessToken.ifPresent(token -> wrapper.getHeaders().set("Authorization", "Bearer " + token));
-            wrapper.getHeaders().setAccept(Arrays.asList(MediaType.valueOf(acceptHeader)));
+            updateHeaders(wrapper.getHeaders());
             return execution.execute(wrapper, body);
+        }
+
+        private void updateHeaders(HttpHeaders headers) {
+            headers.setAccept(List.of(MediaType.valueOf(acceptHeader)));
+            accessToken.ifPresent(token -> headers.set("Authorization", "Bearer " + token));
+            logger.debug(String.valueOf(headers));
         }
     }
 }

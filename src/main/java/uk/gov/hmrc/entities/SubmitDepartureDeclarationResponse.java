@@ -15,19 +15,18 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class SubmitDepartureDeclarationResponse implements Serializable {
 
-    public SubmitDepartureDeclarationResponse(String id, String messageType, String location){
-        setId(id);
-        setMessageType(messageType);
+    public SubmitDepartureDeclarationResponse(String location){
         setLinks(new Links(new Self(location)));
     }
 
-    @JsonProperty("departureId")
-    @Setter @Getter String id = "not implemented yet";
-
-    @JsonProperty("messageType")
-    @Setter @Getter String messageType = "not implemented yet";
-
     @JsonProperty("_links")
     @Setter @Getter Links links;
+
+    @Override
+    public String toString() {
+        return "SubmitDepartureDeclarationResponse{" +
+                ", links=" + links +
+                '}';
+    }
 }
 

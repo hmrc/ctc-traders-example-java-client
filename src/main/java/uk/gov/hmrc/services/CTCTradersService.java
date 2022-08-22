@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import uk.gov.hmrc.entities.DepartureDeclaration;
+import uk.gov.hmrc.entities.GetSingleDepartureMessageRequest;
+import uk.gov.hmrc.entities.GetSingleDepartureMessageResponse;
 import uk.gov.hmrc.entities.SubmitDepartureDeclarationResponse;
 
 import java.text.DateFormat;
@@ -37,9 +39,13 @@ public class CTCTradersService {
     @Autowired @Qualifier("cc015")
     private String cc015Template;
 
-    public SubmitDepartureDeclarationResponse createDepartureMovement(DepartureDeclaration declaration) throws MessageSubmissionException {
-        String payload = cc015Template.replaceAll("\\{eori}", declaration.getIdentificationNumber()).replaceAll("\\{now}", now());
+    public SubmitDepartureDeclarationResponse createDepartureMovement(DepartureDeclaration declaration) throws RequestException, UnauthorizedException {
+        String payload = cc015Template.replace("{eori}", declaration.getIdentificationNumber()).replace("{now}", now());
         return serviceConnector.createDepartureMovement(payload, Optional.of(authService.getCurrentOauthPair().getAccessToken()));
+    }
+
+    public GetSingleDepartureMessageResponse getMessageForDeparture(GetSingleDepartureMessageRequest request) throws RequestException, NotFoundException, UnauthorizedException {
+        return serviceConnector.getSingleDepartureMessage(request.getDepartureId(), request.getMessageId(), Optional.of(authService.getCurrentOauthPair().getAccessToken()));
     }
 
     public String now(){
@@ -48,4 +54,5 @@ public class CTCTradersService {
         df.setTimeZone(tz);
         return df.format(new Date());
     }
+
 }

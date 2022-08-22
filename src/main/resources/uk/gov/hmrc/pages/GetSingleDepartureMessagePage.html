@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:wicket="http://www.w3.org/1999/xhtml" lang="en">
+<body>
+<wicket:extend>
+<section class="hero">
+    <div class="container">
+        <header>
+            <h1 class="hero--heading">Get Single Departure Message</h1>
+        </header>
+        <p class="hero--text">Get a single message from a departure in the HMRC Sandbox</p>
+    </div>
+</section>
+<main class="container main">
+    <span wicket:id="feedback"></span>
+    <form wicket:id="form" class="form-uri-inline">
+        <label wicket:for="departureId">ID: /customs/transits/movements/departures/</label><input type="text" wicket:id="departureId"/><label wicket:for="messageId">/messages/</label><input type="text" wicket:id="messageId"/>
+        <button>Get Message</button>
+    </form>
+</main>
+</wicket:extend>
+</body>
+</html>

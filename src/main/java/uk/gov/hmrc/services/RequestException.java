@@ -20,7 +20,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @AllArgsConstructor
-public class MessageSubmissionException extends Exception {
+public class RequestException extends Exception {
     @Getter @Setter int statusCode;
     @Getter @Setter String status;
     @Getter @Setter String message;

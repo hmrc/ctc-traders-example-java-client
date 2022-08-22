@@ -10,4 +10,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Links {
     @JsonProperty("self") @Setter @Getter Self self;
+
+    @Override
+    public String toString() {
+        return "Links{" +
+                "self=" + self +
+                '}';
+    }
 }

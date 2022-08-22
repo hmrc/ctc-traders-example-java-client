@@ -3,7 +3,6 @@ package uk.gov.hmrc.components;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.apachecommons.CommonsLog;
-import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -13,7 +12,8 @@ import uk.gov.hmrc.components.errors.ValidationErrors;
 import uk.gov.hmrc.entities.DepartureDeclaration;
 import uk.gov.hmrc.entities.SubmitDepartureDeclarationResponse;
 import uk.gov.hmrc.services.CTCTradersService;
-import uk.gov.hmrc.services.MessageSubmissionException;
+import uk.gov.hmrc.services.RequestException;
+import uk.gov.hmrc.services.UnauthorizedException;
 
 import java.net.HttpURLConnection;
 
@@ -40,9 +40,10 @@ public class DepartureDeclarationForm extends Form<DepartureDeclaration> {
             SubmitDepartureDeclarationResponse response = service.createDepartureMovement(declaration);
             info("Submitted declaration successfully");
             log.debug(response);
-//            info("Movement id: "+response.getId());
-//            info("Movement reference: "+response.getLinks().getSelf().getHref());
-        } catch(MessageSubmissionException e){
+            info("Movement ID: " + response.getLinks().getSelf().getHref());
+        } catch(UnauthorizedException e) {
+            log.error("Unable to submit the declaration: server returned unauthorised");
+        } catch(RequestException e) {
             log.error("Unable to submit the declaration: "+e.getMessage(), e);
             ValidationErrors errors = formatError(e);
             for ( ValidationError error : errors.getValidationErrors()) {
@@ -51,7 +52,7 @@ public class DepartureDeclarationForm extends Form<DepartureDeclaration> {
         }
     }
 
-    protected ValidationErrors formatError(MessageSubmissionException e){
+    protected ValidationErrors formatError(RequestException e){
         try {
             switch (e.getStatusCode()) {
                 case  HttpURLConnection.HTTP_BAD_REQUEST:
