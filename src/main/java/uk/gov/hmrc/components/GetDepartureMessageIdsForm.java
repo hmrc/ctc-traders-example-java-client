@@ -2,8 +2,6 @@ package uk.gov.hmrc.components;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.apachecommons.CommonsLog;
-import org.apache.wicket.extensions.markup.html.form.datetime.ZonedDateTimeField;
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -31,8 +29,6 @@ public class GetDepartureMessageIdsForm extends Form<GetDepartureMessageIdsReque
     public GetDepartureMessageIdsForm(String id) {
         super(id, new CompoundPropertyModel<>(new GetDepartureMessageIdsRequest()));
         add(new RequiredTextField<String>("departureId"));
-//        add(new CheckBox("receivedSinceFilter"));
-//        add(new ZonedDateTimeField("receivedSince"));
     }
 
     @Override
@@ -51,7 +47,8 @@ public class GetDepartureMessageIdsForm extends Form<GetDepartureMessageIdsReque
             var response = service.getMessageIdsForDeparture(request);
             info("Returned message successfully.");
             log.debug(response);
-            info("Message IDs: <br />" + response.getMessages().stream().map(MessageId::getId).collect(Collectors.joining("<br />")));
+            info("Message IDs:");
+            response.getMessages().forEach(x -> info("  " + x.getId()));
         } catch (UnauthorizedException e) {
             log.error("Unable to get message IDs: server returned unauthorised");
             error("Unable to get message IDs: server returned unauthorised");

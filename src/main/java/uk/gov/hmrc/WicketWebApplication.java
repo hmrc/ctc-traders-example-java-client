@@ -36,7 +36,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
-import uk.gov.hmrc.pages.*;
+import uk.gov.hmrc.pages.GetDeparturePage;
+import uk.gov.hmrc.pages.GetMessageIdsForDeparturePage;
+import uk.gov.hmrc.pages.GetSingleDepartureMessagePage;
+import uk.gov.hmrc.pages.HomePage;
+import uk.gov.hmrc.pages.SubmitDepartureDeclarationPage;
 
 import java.time.LocalDate;
 
