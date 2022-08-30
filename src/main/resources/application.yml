@@ -20,5 +20,6 @@ tax:
     secret: change-me
     clientId: change-me
     acceptHeader: application/vnd.hmrc.2.0+json
+    refreshToken: ""
 
 

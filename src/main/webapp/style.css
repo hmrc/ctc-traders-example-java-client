@@ -1,13 +1,14 @@
-form.form-uri-inline {
+.form-uri-inline {
     display: flex;
     flex-flow: row wrap;
     align-items: center;
+    margin: 10px 0;
 }
 
-form.form-uri-inline label {
+.form-uri-inline label {
     margin: 0 2px 0 2px;
 }
-form.form-uri-inline input {
+.form-uri-inline input {
     width: 200px !important;
     padding: 10px;
 }

@@ -2,6 +2,7 @@ package uk.gov.hmrc.components;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.apachecommons.CommonsLog;
+import org.apache.wicket.extensions.markup.html.form.datetime.LocalDateTimeTextField;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RequiredTextField;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -29,6 +30,7 @@ public class GetDepartureMessageIdsForm extends Form<GetDepartureMessageIdsReque
     public GetDepartureMessageIdsForm(String id) {
         super(id, new CompoundPropertyModel<>(new GetDepartureMessageIdsRequest()));
         add(new RequiredTextField<String>("departureId"));
+        add(new LocalDateTimeTextField("receivedSince", "dd-MM-yyyy HH:mm:ss"));
     }
 
     @Override

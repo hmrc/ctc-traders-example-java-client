@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Optional;
@@ -15,17 +16,11 @@ public class GetDepartureMessageIdsRequest implements Serializable {
     @JsonProperty("departureId")
     private String departureId;
 
-    @JsonProperty("receivedSinceFilter")
-    private boolean filterOnDate = false;
-
     @JsonProperty("receivedSince")
-    private ZonedDateTime receivedSince = ZonedDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC);
+    private LocalDateTime receivedSince = LocalDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC);
 
     public Optional<ZonedDateTime> getDate() {
-        if (filterOnDate) {
-            return Optional.ofNullable(this.receivedSince);
-        }
-        return Optional.empty();
+        return Optional.ofNullable(this.receivedSince).filter(x -> x.toInstant(ZoneOffset.UTC).isAfter(Instant.EPOCH)).map(x -> x.atZone(ZoneOffset.UTC));
     }
 
 }

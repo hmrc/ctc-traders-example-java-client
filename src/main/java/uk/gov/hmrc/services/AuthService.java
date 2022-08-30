@@ -15,6 +15,7 @@
  */
 package uk.gov.hmrc.services;
 
+import lombok.extern.apachecommons.CommonsLog;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -32,10 +33,12 @@ import org.springframework.web.client.RestTemplate;
 import uk.gov.hmrc.entities.OauthPair;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 
 @Service
+@CommonsLog
 public class AuthService {
 
     @Value("${tax.redirectUrl}")
@@ -48,6 +51,9 @@ public class AuthService {
     String secret;
     @Value("${tax.scope}")
     String scope;
+
+    @Value("${tax.refreshToken}")
+    String refreshToken;
 
     private OauthPair oauthPair;
 
@@ -71,13 +77,29 @@ public class AuthService {
         return oauthPair;
     }
 
+    public boolean attemptRefreshOauthPair() {
+        if (Objects.isNull(this.refreshToken) || this.refreshToken.isEmpty()) {
+            return false;
+        }
+        try {
+            refreshOauthPair(this.refreshToken);
+            return true;
+        } catch (InvalidAuthenticationCodeException e) {
+            return false;
+        }
+    }
+
     public OauthPair refreshOauthPair() throws InvalidAuthenticationCodeException {
+        return refreshOauthPair(oauthPair.getRefreshToken());
+    }
+
+    private OauthPair refreshOauthPair(String refreshToken) throws InvalidAuthenticationCodeException {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("client_secret", secret);
         map.add("client_id", clientId);
         map.add("grant_type", "refresh_token");
         map.add("redirect_uri", redirectUrl);
-        map.add("refresh_token", oauthPair.getRefreshToken());
+        map.add("refresh_token", refreshToken);
 
         oauthPair = fetchTokensFromHMRCAuth(map);
         return oauthPair;
@@ -105,6 +127,8 @@ public class AuthService {
             oauthPair = new OauthPair(String.valueOf(json.get("access_token")),
                     String.valueOf(json.get("refresh_token")),
                     expires_in);
+
+            log.info("Successfully authenticated. Refresh token: " + oauthPair.getRefreshToken());
 
             return oauthPair;
         } catch (ParseException e) {

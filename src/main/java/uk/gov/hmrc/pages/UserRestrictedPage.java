@@ -43,18 +43,17 @@ public abstract class UserRestrictedPage extends AuthAwarePage {
         // No valid access token?  That means that we've not gone through the
         // Government Gateway sign-in and grant screens yet.
         OauthPair oauthPair = authService.getCurrentOauthPair();
-        if (oauthPair == null || !oauthPair.isValid()) {
-            /// TODO Maybe check for code first so it the pair can be refreshed by a new GG login + Grant, even when
-            // the current pair is still valid
+        if ((oauthPair == null || !oauthPair.isValid()) && !authService.attemptRefreshOauthPair()) {
             StringValue code = getPageParameters().get("code");
-            if (code.isEmpty())
+            if (code.isEmpty()) {
                 redirectToGovernmentGateway();
-            else
+            } else {
                 try {
                     authService.createNewOauthPair(code.toOptionalString());
                 } catch (InvalidAuthenticationCodeException e) {
                     redirectToGovernmentGateway();
                 }
+            }
         }
 
         add(new MenuPanel("menu"));

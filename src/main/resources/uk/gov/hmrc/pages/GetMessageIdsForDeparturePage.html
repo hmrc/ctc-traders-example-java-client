@@ -12,8 +12,13 @@
 </section>
 <main class="container main">
     <span wicket:id="feedback"></span>
-    <form wicket:id="form" class="form-uri-inline">
-        <label wicket:for="departureId">ID: /customs/transits/movements/departures/</label><input type="text" wicket:id="departureId"/><span>/messages</span>
+    <form wicket:id="form">
+        <div class="form-uri-inline">
+            <label wicket:for="departureId">ID: /customs/transits/movements/departures/</label><input type="text" wicket:id="departureId"/><span>/messages</span>
+        </div>
+        <div class="form-uri-inline">
+            <label wicket:for="receivedSince">Received Since:</label><input type="text" wicket:id="receivedSince" />
+        </div>
         <button>Get Message IDs</button>
     </form>
 </main>
